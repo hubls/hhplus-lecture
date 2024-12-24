@@ -23,7 +23,7 @@
 
 ## API Specifications
 
-### 1️⃣ 특강 신청 API (핵심) **API `POST /api/lectures/{id}/apply`**
+### 1️⃣ 특강 신청 API (핵심) **API `POST /api/lectures/apply`**
 - 특정 `userId`로 **선착순**으로 제공되는 특강을 신청합니다.
 - 동일한 사용자는 동일한 강의에 대해 **한 번의 수강 신청만 성공**할 수 있습니다.
 - 각 특강은 **선착순 30명**만 신청 가능합니다.
