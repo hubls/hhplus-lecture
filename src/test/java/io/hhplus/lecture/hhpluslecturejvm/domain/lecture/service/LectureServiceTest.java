@@ -1,4 +1,5 @@
 package io.hhplus.lecture.hhpluslecturejvm.domain.lecture.service;
+import io.hhplus.lecture.hhpluslecturejvm.domain.lecture.dto.LectureDto;
 import io.hhplus.lecture.hhpluslecturejvm.domain.lecture.dto.LectureRegistrationApplyResponseDto;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -16,6 +20,8 @@ import static org.mockito.Mockito.*;
 class LectureServiceTest {
     @Mock
     private LectureRegistrationManager lectureRegistrationManager;
+    @Mock
+    private LectureManager lectureManager;
 
     @InjectMocks
     private LectureService lectureService;
@@ -26,7 +32,7 @@ class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("성공 응답")
+    @DisplayName("특강 신청: 성공 응답")
     public void testApplyForLectureRegistration_Success() {
         // given: 강의 ID와 사용자 ID가 주어짐
         long lectureId = 1L;
@@ -48,7 +54,7 @@ class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 강의")
+    @DisplayName("특강 신청: 존재하지 않는 강의")
     public void testApplyForLectureRegistration_Failure_LectureNotFound() {
         // given: 존재하지 않는 강의 ID와 사용자 ID
         long lectureId = 999L;  // 존재하지 않는 강의 ID
@@ -71,7 +77,7 @@ class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("이미 등록된 사용자")
+    @DisplayName("특강 신청: 이미 등록된 사용자")
     public void testApplyForLectureRegistration_Failure_AlreadyRegistered() {
         // given: 이미 등록된 사용자라는 응답
         long lectureId = 1L;
@@ -92,7 +98,7 @@ class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("신청 인원 초과")
+    @DisplayName("특강 신청: 신청 인원 초과")
     public void testApplyForLectureRegistration_Failure_ExceedCapacity() {
         // given: 강의 ID와 사용자 ID가 주어짐
         long lectureId = 1L;
@@ -114,6 +120,55 @@ class LectureServiceTest {
         verify(lectureRegistrationManager, times(1)).register(lectureId, userId);
     }
 
+    @Test
+    @DisplayName("특강 목록 조회: 성공")
+    public void testGetLectures_Success() {
+        // given: 특정 날짜가 주어짐
+        Timestamp date = Timestamp.valueOf("2024-12-24 10:00:00");
 
+        // Mock 데이터: 반환할 LectureDto 리스트 생성
+        List<LectureDto> mockLectures = List.of(
+                new LectureDto(1L, "특강 제목 1",123L, date, date, 30),
+                new LectureDto(2L, "특강 제목 2", 456L, date, date, 25)
+        );
+
+        // when: LectureManager의 getLectures 메서드가 호출되면 Mock 데이터를 반환하도록 설정
+        when(lectureManager.getAvailableLectures(date)).thenReturn(mockLectures);
+
+        // then: LectureService의 getLectures 호출 및 반환값 확인
+        List<LectureDto> result = lectureService.getAvailableLectures(date);
+
+        // 결과값이 Mock 데이터와 일치하는지 확인
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("특강 제목 1", result.get(0).title());
+        assertEquals("특강 제목 2", result.get(1).title());
+
+        // verify: LectureManager의 getLectures가 정확히 한 번 호출되었는지 확인
+        verify(lectureManager, times(1)).getAvailableLectures(date);
+    }
+
+    @Test
+    @DisplayName("특강 목록 조회: 빈 목록 반환")
+    public void testGetLectures_EmptyList() {
+        // given: 특정 날짜가 주어짐
+        Timestamp date = Timestamp.valueOf("2024-12-24 10:00:00");
+
+        // Mock 데이터: 빈 리스트 반환
+        List<LectureDto> mockLectures = List.of();
+
+        // when: LectureManager의 getLectures 메서드가 호출되면 빈 리스트 반환
+        when(lectureManager.getAvailableLectures(date)).thenReturn(mockLectures);
+
+        // then: LectureService의 getLectures 호출 및 반환값 확인
+        List<LectureDto> result = lectureService.getAvailableLectures(date);
+
+        // 결과값이 빈 리스트인지 확인
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        // verify: LectureManager의 getLectures가 정확히 한 번 호출되었는지 확인
+        verify(lectureManager, times(1)).getAvailableLectures(date);
+    }
 
 }
