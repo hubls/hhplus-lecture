@@ -1,4 +1,5 @@
 package io.hhplus.lecture.hhpluslecturejvm.domain.lecture.service;
+import io.hhplus.lecture.hhpluslecturejvm.domain.lecture.dto.LectureCompletedDto;
 import io.hhplus.lecture.hhpluslecturejvm.domain.lecture.dto.LectureDto;
 import io.hhplus.lecture.hhpluslecturejvm.domain.lecture.dto.LectureRegistrationApplyResponseDto;
 
@@ -22,6 +23,9 @@ class LectureServiceTest {
     private LectureRegistrationManager lectureRegistrationManager;
     @Mock
     private LectureManager lectureManager;
+
+    @Mock
+    private LectureUserManager lectureUserManager;
 
     @InjectMocks
     private LectureService lectureService;
@@ -169,6 +173,57 @@ class LectureServiceTest {
 
         // verify: LectureManager의 getLectures가 정확히 한 번 호출되었는지 확인
         verify(lectureManager, times(1)).getAvailableLectures(date);
+    }
+
+    @Test
+    @DisplayName("사용자가 완료한 특강 조회: 성공")
+    public void testGetCompletedLectures_Success() {
+        // given: 특정 사용자 ID가 주어짐
+        long userId = 123L;
+
+        // Mock 데이터: 반환할 LectureCompletedDto 리스트 생성
+        List<LectureCompletedDto> mockCompletedLectures = List.of(
+                new LectureCompletedDto(1L, "완료된 특강 제목 1", 999L),
+                new LectureCompletedDto(2L, "완료된 특강 제목 2", 817L)
+        );
+
+        // when: lectureUserManager.getCompletedLectures 호출 시 Mock 데이터를 반환하도록 설정
+        when(lectureUserManager.getCompletedLectures(userId)).thenReturn(mockCompletedLectures);
+
+        // then: LectureService의 getCompletedLectures 호출 및 반환값 확인
+        List<LectureCompletedDto> result = lectureService.getCompletedLectures(userId);
+
+        // 결과값이 Mock 데이터와 일치하는지 확인
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("완료된 특강 제목 1", result.get(0).name());
+        assertEquals("완료된 특강 제목 2", result.get(1).name());
+
+        // verify: lectureUserManager.getCompletedLectures가 정확히 한 번 호출되었는지 확인
+        verify(lectureUserManager, times(1)).getCompletedLectures(userId);
+    }
+
+    @Test
+    @DisplayName("사용자가 완료한 특강 조회: 빈 목록 반환")
+    public void testGetCompletedLectures_EmptyList() {
+        // given: 특정 사용자 ID가 주어짐
+        long userId = 456L;
+
+        // Mock 데이터: 빈 리스트 반환
+        List<LectureCompletedDto> mockCompletedLectures = List.of();
+
+        // when: lectureUserManager.getCompletedLectures 호출 시 빈 리스트 반환
+        when(lectureUserManager.getCompletedLectures(userId)).thenReturn(mockCompletedLectures);
+
+        // then: LectureService의 getCompletedLectures 호출 및 반환값 확인
+        List<LectureCompletedDto> result = lectureService.getCompletedLectures(userId);
+
+        // 결과값이 빈 리스트인지 확인
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        // verify: lectureUserManager.getCompletedLectures가 정확히 한 번 호출되었는지 확인
+        verify(lectureUserManager, times(1)).getCompletedLectures(userId);
     }
 
 }
