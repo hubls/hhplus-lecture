@@ -37,6 +37,10 @@ public class LectureController {
         return ok(lectureService.getAvailableLectures(date));
     }
 
+    /**
+     * 특강 신청 완료 목록 조회 API
+     */
+
     @GetMapping("/{userId}/completed")
     public ResponseEntity<List<LectureCompletedDto>> getCompletedLectures(
             @PathVariable long userId
