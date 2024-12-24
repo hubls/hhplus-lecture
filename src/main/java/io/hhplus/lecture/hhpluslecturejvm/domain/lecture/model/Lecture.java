@@ -1,13 +1,13 @@
 package io.hhplus.lecture.hhpluslecturejvm.domain.lecture.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "lectures")
-@Data
+@Getter
 public class Lecture {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
