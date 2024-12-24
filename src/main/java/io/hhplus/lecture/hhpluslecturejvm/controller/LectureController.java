@@ -37,4 +37,10 @@ public class LectureController {
         return ok(lectureService.getAvailableLectures(date));
     }
 
+    @GetMapping("/{userId}/completed")
+    public ResponseEntity<List<LectureCompletedDto>> getCompletedLectures(
+            @PathVariable long userId
+    ) {
+        return ok(lectureService.getCompletedLectures(userId));
+    }
 }

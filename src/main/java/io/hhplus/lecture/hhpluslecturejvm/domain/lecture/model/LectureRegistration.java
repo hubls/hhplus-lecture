@@ -1,6 +1,7 @@
 package io.hhplus.lecture.hhpluslecturejvm.domain.lecture.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.sql.Timestamp;
 
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
         name = "lectures_registrations",
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "lecture_id"}) // 중복 신청 방지
 )
+@Data
 public class LectureRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

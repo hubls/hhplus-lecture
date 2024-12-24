@@ -37,7 +37,7 @@
 
 ---
 
-### 3️⃣ 특강 신청 완료 목록 조회 API **`GET /api/lectures/{id}/completed`**
+### 3️⃣ 특강 신청 완료 목록 조회 API **`GET /api/lectures/{userId}/completed`**
 - 특정 `userId`로 신청 완료된 특강 목록을 조회합니다.
 - 응답 항목은 다음 정보를 포함해야 합니다:
     - 특강 ID
