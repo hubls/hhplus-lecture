@@ -38,7 +38,7 @@ public class LectureRegistrationManager {
         }
 
         // 새로운 신청 추가
-        LectureRegistration registration = new LectureRegistration(lectureId, userId);
+        LectureRegistration registration = new LectureRegistration(userId, lecture.getId(), lecture.getInstructorId(), lecture.getTitle());
         lectureRegistrationRepository.save(registration);
 
         // 성공적으로 등록

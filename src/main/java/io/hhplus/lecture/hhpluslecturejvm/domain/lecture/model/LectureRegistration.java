@@ -20,6 +20,12 @@ public class LectureRegistration {
     @Column(name = "lecture_id", nullable = false)
     private Long lectureId; // 신청한 특강 ID
 
+    @Column(name = "instructor_id", nullable = false)
+    private Long instructorId; // 강사 ID
+
+    @Column(name = "lecture_title", nullable = false)
+    private String lectureTitle; // 특강 이름
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt; // 신청 시간
 
@@ -30,8 +36,10 @@ public class LectureRegistration {
 
     }
 
-    public LectureRegistration(Long lectureId, long userId) {
-        this.lectureId = lectureId;
+    public LectureRegistration(Long userId, Long lectureId, Long instructorId, String lectureTitle) {
         this.userId = userId;
+        this.lectureId = lectureId;
+        this.instructorId = instructorId;
+        this.lectureTitle = lectureTitle;
     }
 }
