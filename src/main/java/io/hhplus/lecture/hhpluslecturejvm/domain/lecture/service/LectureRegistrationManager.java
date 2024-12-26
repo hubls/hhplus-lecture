@@ -63,7 +63,7 @@ public class LectureRegistrationManager {
     private Optional<LectureRegistrationApplyResponseDto> validateRegistration(Lecture lecture, long lectureId, long userId) {
         // 1. 현재 등록 인원 확인 (비관적 락으로 트랜잭션 내에서 안전)
         long currentRegistrationCount = lectureRegistrationRepository.countByLectureId(lectureId);
-        if (currentRegistrationCount > lecture.getCapacity()) {
+        if (currentRegistrationCount >= lecture.getCapacity()) {
             return Optional.of(new LectureRegistrationApplyResponseDto(false, "신청 정원이 초과되었습니다."));
         }
 
